@@ -1,0 +1,151 @@
+{
+  "info": {
+    "_postman_id": "b3d2f730-1c50-4fd8-9658-9f4f3ea9f4a5",
+    "name": "HotelPerros API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Listar reservas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/reservas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Buscar reserva por ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/reservas/1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservas",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Crear reserva",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 11,\n  \"nombrePerro\": \"Toby\",\n  \"raza\": \"Beagle\",\n  \"nombreDueno\": \"Carla Reyes\",\n  \"diasHospedaje\": 4,\n  \"tipoHabitacion\": \"Premium\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/reservas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservas"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Actualizar reserva",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 11,\n  \"nombrePerro\": \"Toby\",\n  \"raza\": \"Beagle\",\n  \"nombreDueno\": \"Carla Reyes\",\n  \"diasHospedaje\": 6,\n  \"tipoHabitacion\": \"Suite\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/reservas/11",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservas",
+            "11"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Eliminar reserva",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/reservas/11",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservas",
+            "11"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Total reservas",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/reservas/total",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reservas",
+            "total"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
