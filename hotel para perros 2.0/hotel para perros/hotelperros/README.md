@@ -36,6 +36,8 @@ Este microservicio forma parte del sistema distribuido de gestion para el Hotel 
 | PUT | `/api/v1/reservas/{id}` | Actualizar datos de una estadia existente. |
 | DELETE | `/api/v1/reservas/{id}` | Eliminar una reserva del sistema. |
 | GET | `/api/v1/reservas/total` | Retorna el conteo total de registros. |
+| GET | `/api/v1/reservas/buscar?nombre={nombre}` | Buscar reservas por el nombre del perro. |
+| GET | `/api/v1/reservas/habitacion/{tipo}` | Filtrar reservas por tipo de habitacion. |
 
 ## Pruebas de Integracion (Postman)
 Se incluyen archivos de coleccion para pruebas automaticas:
