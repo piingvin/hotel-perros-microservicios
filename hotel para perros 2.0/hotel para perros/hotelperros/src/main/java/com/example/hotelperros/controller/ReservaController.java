@@ -2,6 +2,7 @@ package com.example.hotelperros.controller;
 
 import com.example.hotelperros.dto.ReservaRequestDTO;
 import com.example.hotelperros.dto.ReservaResponseDTO;
+import com.example.hotelperros.model.Reserva;
 import com.example.hotelperros.service.ReservaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,25 @@ public class ReservaController {
     @GetMapping("/total")
     public ResponseEntity<Long> totalReservas() {
         return ResponseEntity.ok(reservaService.totalReservas());
+    }
+
+    // Endpoint 1: http://localhost:8080/api/v1/reservas/buscar?nombre=Toby
+    @GetMapping("/buscar")
+    public ResponseEntity<List<Reserva>> buscarPorNombrePerro(@RequestParam String nombre) {
+        List<Reserva> reservas = reservaService.buscarPorNombrePerro(nombre);
+        if(reservas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reservas);
+    }
+
+    // Endpoint 2: http://localhost:8080/api/v1/reservas/habitacion/Premium
+    @GetMapping("/habitacion/{tipo}")
+    public ResponseEntity<List<Reserva>> filtrarPorHabitacion(@PathVariable String tipo) {
+        List<Reserva> reservas = reservaService.filtrarPorHabitacion(tipo);
+        if(reservas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reservas);
     }
 }

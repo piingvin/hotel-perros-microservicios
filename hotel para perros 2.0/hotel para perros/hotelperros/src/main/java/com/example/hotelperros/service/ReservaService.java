@@ -111,4 +111,11 @@ public class ReservaService {
                 .duenoNombre(reserva.getDueno() != null ? reserva.getDueno().getNombreCompleto() : null)
                 .build();
     }
+    public List<Reserva> buscarPorNombrePerro(String nombre) {
+        return reservaRepository.findByNombrePerroContainingIgnoreCase(nombre);
+    }
+
+    public List<Reserva> filtrarPorHabitacion(String tipo) {
+        return reservaRepository.findByTipoHabitacionIgnoreCase(tipo);
+    }
 }

@@ -1,77 +1,49 @@
-# Hotel para Perros - API REST
+# Microservicio de Reservas - Hotel para Perros
 
-Proyecto Spring Boot listo para ejecutar en IntelliJ IDEA.
+Este microservicio forma parte del sistema distribuido de gestion para el Hotel Canino. Se encarga de toda la logica de negocio relacionada con la gestion de estadias, duenos y asignacion de habitaciones.
 
-## Requisitos
+## Integrantes
+* Antonia Avila (an.avilam@duocuc.cl)
+* Samira Usen (sa.usen@duocuc.cl)
+* Diego Saavedra (di.saavedrar@duocuc.cl)
+* Oscar Inaipil (os.inaipil@duocuc.cl)
 
-- JDK 17 o superior
-- IntelliJ IDEA (Community o Ultimate)
-- Maven Wrapper (incluido en el proyecto)
+## Tecnologias y Arquitectura
+* Java 17 y Spring Boot 3.3.1
+* Base de Datos: MySQL (Persistencia real con JPA/Hibernate)
+* Patron de Diseno: Arquitectura CSR (Controller - Service - Repository)
+* Gestion de Dependencias: Maven
 
-## Abrir en IntelliJ
+## Requisitos Previos
+1. JDK 17 instalado y configurado en el PATH.
+2. MySQL Server activo (via XAMPP o instalacion nativa) en el puerto 3306.
+3. Base de datos: El sistema creara automaticamente la BD `hotel_perros_db` al iniciar la aplicacion.
 
-1. Abre IntelliJ IDEA.
-2. Selecciona `Open` y elige la carpeta `hotelperros`.
-3. Espera a que IntelliJ detecte el proyecto Maven (`pom.xml`) y descargue dependencias.
-4. Verifica que el SDK del proyecto sea Java 17+.
+## Instalacion y Ejecucion
+1. Clonar el repositorio:
+   `git clone https://github.com/piingvin/hotel-perros-microservicios.git`
+2. Configurar el archivo `src/main/resources/application.properties` con las credenciales locales de MySQL.
+3. Ejecutar el proyecto desde IntelliJ IDEA ejecutando la clase principal `HotelPerrosApplication`, o mediante consola con:
+   `./mvnw spring-boot:run`
 
-## Ejecutar la API
+## Endpoints de la API (v1)
 
-1. Abre la clase `HotelPerrosApplication`.
-2. Ejecuta el metodo `main`.
-3. La API quedara disponible en:
-   - `http://localhost:8080/api/v1/reservas`
+| Metodo | Endpoint | Descripcion |
+| :--- | :--- | :--- |
+| GET | `/api/v1/reservas` | Obtener todas las reservas con sus duenos. |
+| GET | `/api/v1/reservas/{id}` | Buscar una reserva especifica. |
+| POST | `/api/v1/reservas` | Registrar una nueva reserva (JSON requerido). |
+| PUT | `/api/v1/reservas/{id}` | Actualizar datos de una estadia existente. |
+| DELETE | `/api/v1/reservas/{id}` | Eliminar una reserva del sistema. |
+| GET | `/api/v1/reservas/total` | Retorna el conteo total de registros. |
 
-## Endpoints disponibles
+## Pruebas de Integracion (Postman)
+Se incluyen archivos de coleccion para pruebas automaticas:
+1. Importar `postman_collection.json` en Postman.
+2. Configurar el environment apuntando a `http://localhost:8080`.
+3. Ejecutar las peticiones para verificar el CRUD completo.
 
-- `GET /api/v1/reservas` -> Lista todas las reservas
-- `GET /api/v1/reservas/{id}` -> Busca una reserva por id
-- `POST /api/v1/reservas` -> Crea una reserva
-- `PUT /api/v1/reservas/{id}` -> Actualiza una reserva
-- `DELETE /api/v1/reservas/{id}` -> Elimina una reserva
-- `GET /api/v1/reservas/total` -> Total de reservas
-
-## Ejemplo para POST (JSON)
-
-```json
-{
-  "id": 11,
-  "nombrePerro": "Toby",
-  "raza": "Beagle",
-  "nombreDueno": "Carla Reyes",
-  "diasHospedaje": 4,
-  "tipoHabitacion": "Premium"
-}
-```
-
-## Probar rapido en terminal (PowerShell)
-
-```powershell
-Invoke-RestMethod -Method Get -Uri "http://localhost:8080/api/v1/reservas"
-```
-
-## Compilar por consola
-
-```powershell
-./mvnw clean package
-```
-
-## Probar con Postman (recomendado)
-
-1. Importa `postman_collection.json`.
-2. Importa `local.postman_environment.json`.
-3. Selecciona el environment `HotelPerros Local`.
-4. Ejecuta las requests en este orden:
-   - `Listar reservas`
-   - `Buscar reserva por ID`
-   - `Crear reserva`
-   - `Actualizar reserva`
-   - `Total reservas`
-   - `Eliminar reserva`
-
-## Notas tecnicas
-
-- Arquitectura CSR: `controller`, `service`, `repository`, `model`.
-- Validaciones con Bean Validation (`@Valid` y constraints en modelo).
-- Manejo global de errores con `@RestControllerAdvice`.
-- Logs de servicio con SLF4J.
+## Notas de Implementacion
+* Validaciones: Se utiliza `jakarta.validation` para asegurar la integridad de los datos de entrada.
+* Excepciones: Manejo centralizado de errores mediante `@RestControllerAdvice`.
+* Carga Inicial: El sistema incluye un archivo `data.sql` que carga datos de prueba automaticamente al levantar el servicio por primera vez.
