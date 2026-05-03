@@ -1,16 +1,23 @@
 package com.example.hotelperros.repository;
 
-import java.util.List;
 import com.example.hotelperros.model.Reserva;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 
 @Repository
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
-    // Buscar perritos por nombre (ignorando mayúsculas y minúsculas)
+
+    /**
+     * Genera automáticamente la query SQL: SELECT * FROM reservas WHERE nombre_perro LIKE '%nombre%'
+     * Ignora el Case Sensitivity (mayúsculas/minúsculas) para facilitar la búsqueda al usuario.
+     */
     List<Reserva> findByNombrePerroContainingIgnoreCase(String nombrePerro);
 
-    // Filtrar por el tipo de habitación
+    /**
+     * Genera automáticamente la query SQL: SELECT * FROM reservas WHERE tipo_habitacion = 'tipo'
+     * Filtra los registros asegurando que "VIP" y "vip" sean tratados como la misma categoría.
+     */
     List<Reserva> findByTipoHabitacionIgnoreCase(String tipoHabitacion);
 }

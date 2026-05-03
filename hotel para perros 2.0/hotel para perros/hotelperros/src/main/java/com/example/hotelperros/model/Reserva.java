@@ -26,6 +26,11 @@ public class Reserva {
 
     private String tipoHabitacion;
 
+    /**
+     * Relación Bidireccional (N:1): Múltiples reservas pueden pertenecer a un único dueño.
+     * - FetchType.LAZY: Optimización de rendimiento. El objeto 'Dueno' solo se consultará
+     *   en la base de datos cuando se invoque explícitamente (ej: al hacer reserva.getDueno()).
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dueno_id")
     private Dueno dueno;

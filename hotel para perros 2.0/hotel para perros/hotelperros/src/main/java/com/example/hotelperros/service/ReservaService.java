@@ -21,62 +21,78 @@ import java.util.stream.Collectors;
 public class ReservaService {
 
     private final ReservaRepository reservaRepository;
-    private final DuenoRepository duenoRepository; // Movido aquí desde el controlador
+    private final DuenoRepository duenoRepository;
 
+    /**
+     * Recupera el catálogo completo de reservas activas.
+     * Se delega la transformación a DTO para evitar exponer la entidad de base de datos.
+     */
     public List<ReservaResponseDTO> getReservas() {
-        log.info("Obteniendo listado completo de reservas");
+        log.info("Obteniendo listado completo de reservas activas");
         return reservaRepository.findAll().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Procesa la creación de una nueva reserva aplicando validaciones de negocio.
+     * 1. Valida el tipo de habitación permitida.
+     * 2. Verifica la existencia del dueño asociado.
+     * 3. Persiste la información en la base de datos.
+     */
     public ReservaResponseDTO crearReserva(ReservaRequestDTO dto) {
         log.info("Iniciando creación de reserva para el perro: {}", dto.getNombrePerro());
 
-        // REGLA DE NEGOCIO: Validar tipo de habitación
+        // Regla de Negocio: El sistema solo admite las categorías "VIP" y "ESTANDAR" para mantener la consistencia tarifaria.
         if (!dto.getTipoHabitacion().equalsIgnoreCase("VIP") &&
                 !dto.getTipoHabitacion().equalsIgnoreCase("ESTANDAR")) {
-            log.warn("Intento de reserva con tipo de habitación inválido: {}", dto.getTipoHabitacion());
+            log.warn("Intento de reserva con tipo de habitación no soportado por el hotel: {}", dto.getTipoHabitacion());
             throw new IllegalArgumentException("Tipo de habitación inválido. Debe ser VIP o ESTANDAR.");
         }
 
+        // Se requiere asegurar la integridad referencial antes de crear la reserva.
         Dueno dueno = duenoRepository.findById(dto.getDuenoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Dueño no encontrado con ID: " + dto.getDuenoId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Operación denegada. Dueño no registrado con ID: " + dto.getDuenoId()));
 
         Reserva reserva = Reserva.builder()
                 .nombrePerro(dto.getNombrePerro())
                 .raza(dto.getRaza())
                 .diasHospedaje(dto.getDiasHospedaje())
-                .tipoHabitacion(dto.getTipoHabitacion().toUpperCase())
+                .tipoHabitacion(dto.getTipoHabitacion().toUpperCase()) // Normalización a mayúsculas
                 .dueno(dueno)
                 .build();
 
         try {
             Reserva saved = reservaRepository.save(reserva);
-            log.info("Reserva guardada exitosamente con id: {}", saved.getId());
+            log.info("Reserva registrada exitosamente con ID: {}", saved.getId());
             return mapToDTO(saved);
         } catch (DataAccessException e) {
-            log.error("Error en la base de datos al guardar la reserva", e);
-            throw new RuntimeException("Error guardando reserva", e);
+            log.error("Fallo de persistencia transaccional al intentar guardar la reserva", e);
+            throw new RuntimeException("Error interno guardando la reserva", e);
         }
     }
 
     public ReservaResponseDTO getReservaId(Long id) {
-        log.info("Buscando reserva con id: {}", id);
+        log.info("Consultando detalles de la reserva ID: {}", id);
         Reserva reserva = reservaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("No existen registros para la reserva ID: " + id));
         return mapToDTO(reserva);
     }
 
+    /**
+     * Actualiza una reserva existente reemplazando todos sus atributos.
+     * Exige validación previa tanto de la reserva como del dueño vinculado.
+     */
     public ReservaResponseDTO updateReserva(Long id, ReservaRequestDTO dto) {
-        log.info("Iniciando actualización de reserva con id: {}", id);
+        log.info("Actualizando datos de la reserva ID: {}", id);
 
         Reserva reservaActualizada = reservaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Actualización abortada. Reserva no encontrada con ID: " + id));
 
         Dueno dueno = duenoRepository.findById(dto.getDuenoId())
-                .orElseThrow(() -> new ResourceNotFoundException("Dueño no encontrado con ID: " + dto.getDuenoId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Actualización abortada. Dueño no registrado con ID: " + dto.getDuenoId()));
 
+        // Actualización del estado de la entidad
         reservaActualizada.setNombrePerro(dto.getNombrePerro());
         reservaActualizada.setRaza(dto.getRaza());
         reservaActualizada.setDiasHospedaje(dto.getDiasHospedaje());
@@ -84,15 +100,19 @@ public class ReservaService {
         reservaActualizada.setDueno(dueno);
 
         Reserva saved = reservaRepository.save(reservaActualizada);
-        log.info("Reserva con id: {} actualizada correctamente", id);
+        log.info("Reserva ID: {} modificada correctamente", id);
         return mapToDTO(saved);
     }
 
+    /**
+     * Elimina físicamente el registro de la base de datos.
+     * Se verifica la existencia previa para evitar excepciones de nivel de datos.
+     */
     public void deleteReserva(Long id) {
         if (!reservaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Reserva no encontrada con id: " + id);
+            throw new ResourceNotFoundException("Eliminación abortada. Reserva no encontrada con ID: " + id);
         }
-        log.info("Eliminando reserva con id: {}", id);
+        log.info("Procesando eliminación de reserva ID: {}", id);
         reservaRepository.deleteById(id);
     }
 
@@ -100,7 +120,10 @@ public class ReservaService {
         return reservaRepository.count();
     }
 
-    // El mapeo ahora es responsabilidad del servicio
+    /**
+     * Utilitario interno para transformar la Entidad de Dominio (Reserva)
+     * en un Objeto de Transferencia (DTO) seguro para la respuesta HTTP.
+     */
     private ReservaResponseDTO mapToDTO(Reserva reserva) {
         return ReservaResponseDTO.builder()
                 .id(reserva.getId())
@@ -108,14 +131,29 @@ public class ReservaService {
                 .raza(reserva.getRaza())
                 .diasHospedaje(reserva.getDiasHospedaje())
                 .tipoHabitacion(reserva.getTipoHabitacion())
+                // Extracción segura del nombre previniendo NullPointerException
                 .duenoNombre(reserva.getDueno() != null ? reserva.getDueno().getNombreCompleto() : null)
                 .build();
     }
-    public List<Reserva> buscarPorNombrePerro(String nombre) {
-        return reservaRepository.findByNombrePerroContainingIgnoreCase(nombre);
+
+    /**
+     * Búsqueda flexible de reservas permitiendo coincidencias parciales (ej: "Tob" encuentra "Toby").
+     * Implementado para mejorar la experiencia del usuario en el panel de administración.
+     */
+    public List<ReservaResponseDTO> buscarPorNombrePerro(String nombre) {
+        log.info("Ejecutando búsqueda de reservas asociadas al nombre: {}", nombre);
+        return reservaRepository.findByNombrePerroContainingIgnoreCase(nombre).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Reserva> filtrarPorHabitacion(String tipo) {
-        return reservaRepository.findByTipoHabitacionIgnoreCase(tipo);
+    /**
+     * Filtro administrativo para visualizar la ocupación actual segregada por categoría.
+     */
+    public List<ReservaResponseDTO> filtrarPorHabitacion(String tipo) {
+        log.info("Consultando ocupación para habitaciones tipo: {}", tipo);
+        return reservaRepository.findByTipoHabitacionIgnoreCase(tipo).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
     }
 }
