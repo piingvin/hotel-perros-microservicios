@@ -3,7 +3,7 @@ package com.example.hotelperros.repository;
 import com.example.hotelperros.model.Reserva;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -20,4 +20,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
      * Filtra los registros asegurando que "VIP" y "vip" sean tratados como la misma categoría.
      */
     List<Reserva> findByTipoHabitacionIgnoreCase(String tipoHabitacion);
+
+    List<Reserva> findByFechaBetween(LocalDate fechaInicio, LocalDate fechaFin);
 }

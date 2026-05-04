@@ -6,8 +6,9 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.3.1</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
+
 	<groupId>com.example</groupId>
 	<artifactId>hotelperros</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -16,7 +17,6 @@
 
 	<properties>
 		<java.version>17</java.version>
-		<!-- Forzamos la versión más nueva de Lombok compatible con tu JDK -->
 		<lombok.version>1.18.34</lombok.version>
 	</properties>
 
@@ -33,11 +33,10 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-		<!-- Para que entienda @Data, @Builder, @NoArgsConstructor (Lombok) -->
+		<!-- Lombok corregido: Sin forzar versión acá, toma la de arriba -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>${lombok.version}</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -67,6 +66,14 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

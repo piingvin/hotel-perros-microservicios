@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "reservas")
@@ -25,6 +26,8 @@ public class Reserva {
     private Integer diasHospedaje;
 
     private String tipoHabitacion;
+
+    private LocalDate fecha;
 
     /**
      * Relación Bidireccional (N:1): Múltiples reservas pueden pertenecer a un único dueño.

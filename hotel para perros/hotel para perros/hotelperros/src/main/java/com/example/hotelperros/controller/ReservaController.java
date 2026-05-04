@@ -83,4 +83,25 @@ public class ReservaController {
         }
         return ResponseEntity.ok(reservas);
     }
+    // Endpoint 9: GET /api/v1/reservas/rango
+    // Filtra las reservas por un rango de fechas (fecha de inicio y fin)
+    @GetMapping("/rango")
+    public ResponseEntity<List<ReservaResponseDTO>> filtrarPorRangoFechas(
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate fechaInicio,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate fechaFin) {
+
+        List<ReservaResponseDTO> reservas = reservaService.buscarPorRangoFechas(fechaInicio, fechaFin);
+        if(reservas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(reservas);
+    }
+    // Endpoint 10: GET /api/v1/reservas/{id}/costo
+    // Calcula el costo total de la reserva según la habitación y días de hospedaje
+    @GetMapping("/{id}/costo")
+    public ResponseEntity<Double> calcularCostoReserva(@PathVariable Long id) {
+        Double costoTotal = reservaService.calcularCostoReserva(id);
+        return ResponseEntity.ok(costoTotal);
+    }
+
 }

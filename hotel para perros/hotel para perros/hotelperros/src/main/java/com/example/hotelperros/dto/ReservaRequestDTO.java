@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +28,9 @@ public class ReservaRequestDTO {
 
     @NotBlank(message = "El tipo de habitacion es obligatorio")
     private String tipoHabitacion;
+
+    @NotNull(message = "La fecha de la reserva es obligatoria")
+    private LocalDate fecha;
 
     @NotNull(message = "El ID del dueno es obligatorio")
     private Long duenoId;

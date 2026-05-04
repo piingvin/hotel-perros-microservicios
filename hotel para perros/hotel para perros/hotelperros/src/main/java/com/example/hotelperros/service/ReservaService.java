@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +24,6 @@ public class ReservaService {
     private final ReservaRepository reservaRepository;
     private final DuenoRepository duenoRepository;
 
-    /**
-     * Recupera el catálogo completo de reservas activas.
-     * Se delega la transformación a DTO para evitar exponer la entidad de base de datos.
-     */
     public List<ReservaResponseDTO> getReservas() {
         log.info("Obteniendo listado completo de reservas activas");
         return reservaRepository.findAll().stream()
@@ -34,23 +31,15 @@ public class ReservaService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Procesa la creación de una nueva reserva aplicando validaciones de negocio.
-     * 1. Valida el tipo de habitación permitida.
-     * 2. Verifica la existencia del dueño asociado.
-     * 3. Persiste la información en la base de datos.
-     */
     public ReservaResponseDTO crearReserva(ReservaRequestDTO dto) {
         log.info("Iniciando creación de reserva para el perro: {}", dto.getNombrePerro());
 
-        // Regla de Negocio: El sistema solo admite las categorías "VIP" y "ESTANDAR" para mantener la consistencia tarifaria.
         if (!dto.getTipoHabitacion().equalsIgnoreCase("VIP") &&
                 !dto.getTipoHabitacion().equalsIgnoreCase("ESTANDAR")) {
             log.warn("Intento de reserva con tipo de habitación no soportado por el hotel: {}", dto.getTipoHabitacion());
             throw new IllegalArgumentException("Tipo de habitación inválido. Debe ser VIP o ESTANDAR.");
         }
 
-        // Se requiere asegurar la integridad referencial antes de crear la reserva.
         Dueno dueno = duenoRepository.findById(dto.getDuenoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Operación denegada. Dueño no registrado con ID: " + dto.getDuenoId()));
 
@@ -58,7 +47,8 @@ public class ReservaService {
                 .nombrePerro(dto.getNombrePerro())
                 .raza(dto.getRaza())
                 .diasHospedaje(dto.getDiasHospedaje())
-                .tipoHabitacion(dto.getTipoHabitacion().toUpperCase()) // Normalización a mayúsculas
+                .tipoHabitacion(dto.getTipoHabitacion().toUpperCase())
+                .fecha(dto.getFecha()) // ¡FIX: Se agrega la fecha que faltaba!
                 .dueno(dueno)
                 .build();
 
@@ -79,10 +69,6 @@ public class ReservaService {
         return mapToDTO(reserva);
     }
 
-    /**
-     * Actualiza una reserva existente reemplazando todos sus atributos.
-     * Exige validación previa tanto de la reserva como del dueño vinculado.
-     */
     public ReservaResponseDTO updateReserva(Long id, ReservaRequestDTO dto) {
         log.info("Actualizando datos de la reserva ID: {}", id);
 
@@ -92,11 +78,11 @@ public class ReservaService {
         Dueno dueno = duenoRepository.findById(dto.getDuenoId())
                 .orElseThrow(() -> new ResourceNotFoundException("Actualización abortada. Dueño no registrado con ID: " + dto.getDuenoId()));
 
-        // Actualización del estado de la entidad
         reservaActualizada.setNombrePerro(dto.getNombrePerro());
         reservaActualizada.setRaza(dto.getRaza());
         reservaActualizada.setDiasHospedaje(dto.getDiasHospedaje());
         reservaActualizada.setTipoHabitacion(dto.getTipoHabitacion().toUpperCase());
+        reservaActualizada.setFecha(dto.getFecha()); // ¡FIX: Agregado a la actualización!
         reservaActualizada.setDueno(dueno);
 
         Reserva saved = reservaRepository.save(reservaActualizada);
@@ -104,10 +90,6 @@ public class ReservaService {
         return mapToDTO(saved);
     }
 
-    /**
-     * Elimina físicamente el registro de la base de datos.
-     * Se verifica la existencia previa para evitar excepciones de nivel de datos.
-     */
     public void deleteReserva(Long id) {
         if (!reservaRepository.existsById(id)) {
             throw new ResourceNotFoundException("Eliminación abortada. Reserva no encontrada con ID: " + id);
@@ -120,10 +102,6 @@ public class ReservaService {
         return reservaRepository.count();
     }
 
-    /**
-     * Utilitario interno para transformar la Entidad de Dominio (Reserva)
-     * en un Objeto de Transferencia (DTO) seguro para la respuesta HTTP.
-     */
     private ReservaResponseDTO mapToDTO(Reserva reserva) {
         return ReservaResponseDTO.builder()
                 .id(reserva.getId())
@@ -131,15 +109,11 @@ public class ReservaService {
                 .raza(reserva.getRaza())
                 .diasHospedaje(reserva.getDiasHospedaje())
                 .tipoHabitacion(reserva.getTipoHabitacion())
-                // Extracción segura del nombre previniendo NullPointerException
+                .fecha(reserva.getFecha()) // ¡FIX: Agregado al mapeo de salida!
                 .duenoNombre(reserva.getDueno() != null ? reserva.getDueno().getNombreCompleto() : null)
                 .build();
     }
 
-    /**
-     * Búsqueda flexible de reservas permitiendo coincidencias parciales (ej: "Tob" encuentra "Toby").
-     * Implementado para mejorar la experiencia del usuario en el panel de administración.
-     */
     public List<ReservaResponseDTO> buscarPorNombrePerro(String nombre) {
         log.info("Ejecutando búsqueda de reservas asociadas al nombre: {}", nombre);
         return reservaRepository.findByNombrePerroContainingIgnoreCase(nombre).stream()
@@ -147,13 +121,33 @@ public class ReservaService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Filtro administrativo para visualizar la ocupación actual segregada por categoría.
-     */
     public List<ReservaResponseDTO> filtrarPorHabitacion(String tipo) {
         log.info("Consultando ocupación para habitaciones tipo: {}", tipo);
         return reservaRepository.findByTipoHabitacionIgnoreCase(tipo).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public List<ReservaResponseDTO> buscarPorRangoFechas(LocalDate fechaInicio, LocalDate fechaFin) {
+        log.info("Buscando reservas entre {} y {}", fechaInicio, fechaFin);
+        return reservaRepository.findByFechaBetween(fechaInicio, fechaFin).stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Double calcularCostoReserva(Long id) {
+        log.info("Calculando el costo de la reserva ID: {}", id);
+
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva no encontrada con ID: " + id));
+
+        double tarifaDiaria = 0.0;
+        if (reserva.getTipoHabitacion().equalsIgnoreCase("VIP")) {
+            tarifaDiaria = 50.0;
+        } else {
+            tarifaDiaria = 25.0;
+        }
+
+        return reserva.getDiasHospedaje() * tarifaDiaria;
     }
 }
