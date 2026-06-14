@@ -6,6 +6,17 @@
       <list>
         <option value="$PROJECT_DIR$/hotel para perros 2.0/hotel para perros/hotelperros/pom.xml" />
         <option value="$PROJECT_DIR$/hotel para perros/hotel para perros/hotelperros/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-servicios/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-duenos/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-empleados/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-facturacion/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-habitaciones/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-inventario/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-mascotas/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-notificaciones/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-reportes/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/ms-reservas/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>

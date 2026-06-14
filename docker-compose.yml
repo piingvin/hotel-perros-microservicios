@@ -1,0 +1,129 @@
+version: "3.8"
+
+services:
+  ms-reservas:
+    build: ./microservices/ms-reservas
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-duenos:
+    build: ./microservices/ms-duenos
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-mascotas:
+    build: ./microservices/ms-mascotas
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-habitaciones:
+    build: ./microservices/ms-habitaciones
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-facturacion:
+    build: ./microservices/ms-facturacion
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      RESERVAS_API_URL: http://ms-reservas:8080/api/v1
+    depends_on:
+      - ms-reservas
+    networks:
+      - hotel-network
+
+  ms-empleados:
+    build: ./microservices/ms-empleados
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-servicios:
+    build: ./microservices/ms-servicios
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-inventario:
+    build: ./microservices/ms-inventario
+    ports:
+      - "8088:8088"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-notificaciones:
+    build: ./microservices/ms-notificaciones
+    ports:
+      - "8089:8089"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  ms-reportes:
+    build: ./microservices/ms-reportes
+    ports:
+      - "8090:8090"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    networks:
+      - hotel-network
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      MS_RESERVAS_URI: http://ms-reservas:8080
+      MS_DUENOS_URI: http://ms-duenos:8082
+      MS_MASCOTAS_URI: http://ms-mascotas:8083
+      MS_HABITACIONES_URI: http://ms-habitaciones:8084
+      MS_FACTURACION_URI: http://ms-facturacion:8085
+      MS_EMPLEADOS_URI: http://ms-empleados:8086
+      MS_SERVICIOS_URI: http://ms-servicios:8087
+      MS_INVENTARIO_URI: http://ms-inventario:8088
+      MS_NOTIFICACIONES_URI: http://ms-notificaciones:8089
+      MS_REPORTES_URI: http://ms-reportes:8090
+    depends_on:
+      - ms-reservas
+      - ms-duenos
+      - ms-mascotas
+      - ms-habitaciones
+      - ms-facturacion
+      - ms-empleados
+      - ms-servicios
+      - ms-inventario
+      - ms-notificaciones
+      - ms-reportes
+    networks:
+      - hotel-network
+
+networks:
+  hotel-network:
+    driver: bridge

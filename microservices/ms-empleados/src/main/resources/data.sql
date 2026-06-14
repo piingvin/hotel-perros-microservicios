@@ -1,0 +1,3 @@
+INSERT INTO empleados (nombre, rut, correo, cargo, turno) VALUES ('María López', '15.123.456-7', 'm.lopez@hotelperros.cl', 'Recepcionista', 'Mañana');
+INSERT INTO empleados (nombre, rut, correo, cargo, turno) VALUES ('Carlos Soto', '18.765.432-1', 'c.soto@hotelperros.cl', 'Peluquero Canino', 'Tarde');
+INSERT INTO empleados (nombre, rut, correo, cargo, turno) VALUES ('Ana Silva', '19.876.543-K', 'a.silva@hotelperros.cl', 'Veterinaria de turno', 'Noche');

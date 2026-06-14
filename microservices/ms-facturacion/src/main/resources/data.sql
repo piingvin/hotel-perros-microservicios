@@ -1,0 +1,1 @@
+INSERT INTO factura (concepto, reserva_id, monto, fecha_emision, estado, metodo_pago) VALUES ('Estadía VIP Firulais', 1, 250000.0, CURRENT_DATE, 'EMITIDA', 'Tarjeta de Crédito');

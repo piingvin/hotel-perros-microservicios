@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ms-empleados
+  datasource:
+    url: jdbc:h2:mem:ms-empleados;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update
+  sql:
+    init:
+      mode: always
+server:
+  port: 8086
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

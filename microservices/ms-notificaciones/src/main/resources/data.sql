@@ -1,0 +1,1 @@
+INSERT INTO notificaciones (mensaje) VALUES ('Reserva confirmada exitosamente');

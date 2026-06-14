@@ -1,0 +1,2 @@
+INSERT INTO habitaciones (tipo, numero, precio_noche, estado) VALUES ('VIP', '101', 50000.0, 'DISPONIBLE');
+INSERT INTO habitaciones (tipo, numero, precio_noche, estado) VALUES ('ESTANDAR', '102', 25000.0, 'DISPONIBLE');

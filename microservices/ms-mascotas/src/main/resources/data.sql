@@ -1,0 +1,2 @@
+INSERT INTO mascotas (nombre, raza, edad, peso, vacunas_al_dia, dueno_id) VALUES ('Pailita', 'Mestizo', 3, 12.5, true, 1);
+INSERT INTO mascotas (nombre, raza, edad, peso, vacunas_al_dia, dueno_id) VALUES ('Bobi', 'Pastor Alemán', 5, 30.0, true, 2);

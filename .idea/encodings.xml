@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/api-gateway/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hotel para perros 2.0/hotel para perros/hotelperros/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/hotel para perros/hotel para perros/hotelperros/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-duenos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-empleados/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-facturacion/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-habitaciones/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-inventario/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-mascotas/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-notificaciones/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-reportes/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-reservas/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/ms-servicios/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
 </project>

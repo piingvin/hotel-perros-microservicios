@@ -1,0 +1,78 @@
+spring:
+  application:
+    name: api-gateway
+  profiles:
+    active: dev
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader=X-Gateway, hotel-perros-gateway
+      routes:
+        - id: ms-reservas
+          uri: ${MS_RESERVAS_URI:http://localhost:8080}
+          predicates:
+            - Path=/api/v1/reservas/**
+        - id: ms-duenos
+          uri: ${MS_DUENOS_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/v1/duenos/**
+        - id: ms-mascotas
+          uri: ${MS_MASCOTAS_URI:http://localhost:8083}
+          predicates:
+            - Path=/api/v1/mascotas/**
+        - id: ms-habitaciones
+          uri: ${MS_HABITACIONES_URI:http://localhost:8084}
+          predicates:
+            - Path=/api/v1/habitaciones/**
+        - id: ms-facturacion
+          uri: ${MS_FACTURACION_URI:http://localhost:8085}
+          predicates:
+            - Path=/api/v1/facturacion/**
+        - id: ms-empleados
+          uri: ${MS_EMPLEADOS_URI:http://localhost:8086}
+          predicates:
+            - Path=/api/v1/empleados/**
+        - id: ms-servicios
+          uri: ${MS_SERVICIOS_URI:http://localhost:8087}
+          predicates:
+            - Path=/api/v1/servicios/**
+        - id: ms-inventario
+          uri: ${MS_INVENTARIO_URI:http://localhost:8088}
+          predicates:
+            - Path=/api/v1/inventario/**
+        - id: ms-notificaciones
+          uri: ${MS_NOTIFICACIONES_URI:http://localhost:8089}
+          predicates:
+            - Path=/api/v1/notificaciones/**
+        - id: ms-reportes
+          uri: ${MS_REPORTES_URI:http://localhost:8090}
+          predicates:
+            - Path=/api/v1/reportes/**
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+server:
+  port: 8081
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+server:
+  port: ${PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

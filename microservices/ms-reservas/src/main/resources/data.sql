@@ -1,0 +1,2 @@
+INSERT INTO reservas (dueno_id, mascota_id, habitacion_id, fecha_inicio, fecha_fin, estado) VALUES (1, 1, 1, '2026-06-15', '2026-06-20', 'PENDIENTE');
+INSERT INTO reservas (dueno_id, mascota_id, habitacion_id, fecha_inicio, fecha_fin, estado) VALUES (2, 2, 2, '2026-06-18', '2026-06-25', 'CONFIRMADA');
