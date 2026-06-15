@@ -4,10 +4,11 @@ Sistema distribuido de gestión de un hotel canino con **10 microservicios indep
 
 ## Integrantes
 
-- Antonia Avila (an.avilam@duocuc.cl)
-- Samira Usen (sa.usen@duocuc.cl)
-- Diego Saavedra (di.saavedrar@duocuc.cl)
+
 - Oscar Inaipil (os.inaipil@duocuc.cl)
+-  Antonia Avila (an.avilam@duocuc.cl)
+-  Samira Usen (sa.usen@duocuc.cl)
+ - Diego Saavedra (di.saavedrar@duocuc.cl)
 
 ## Microservicios implementados
 
