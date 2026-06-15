@@ -122,3 +122,4 @@ curl -X POST http://localhost:8085/api/v1/facturacion \
   -H "Content-Type: application/json" \
   -d "{\"concepto\":\"Hospedaje\",\"reservaId\":1}"
 ```
+## Hotel de perros
